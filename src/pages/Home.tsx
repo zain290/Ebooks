@@ -105,30 +105,30 @@ const Home: React.FC = () => {
         transition={{ duration: 0.5 }}
       >
         {/* Dribbble Exact Match Hero Section - SCALED DOWN */}
-        <div className="bg-[#F9F9F7] w-full pt-6 pb-6 px-4 md:px-12 rounded-b-[40px] shadow-sm relative z-20">
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 relative z-10">
+        <div className="bg-[#F9F9F7] w-full pt-8 pb-8 px-4 md:px-12 rounded-b-[40px] shadow-sm relative z-20">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-14 relative z-10">
             
             {/* Left Column */}
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-center gap-6 w-full">
               <div>
                 <HeroHeadline />
                 <HeroBadge />
               </div>
               
-              <div className="mt-6 lg:mt-0">
+              <div className="pt-2">
                 <ExploreButton />
               </div>
             </div>
 
             {/* Right Column */}
-            <div className="w-full lg:w-[400px] flex flex-col items-end gap-4 relative">
+            <div className="w-full lg:w-[420px] flex flex-col items-center lg:items-end gap-6 relative">
               <HeroDescription />
               
-              <div className="w-full h-[400px] relative">
+              <div className="w-full max-w-[340px] sm:max-w-[380px] h-[370px] sm:h-[410px] relative flex items-center justify-center">
                 <NewSeriesCard />
                 
                 {/* Overlapping Daily Visitors */}
-                <div className="absolute -bottom-4 -right-2 lg:right-auto lg:-left-6 z-20 scale-90 origin-bottom-left">
+                <div className="absolute -bottom-4 -left-3 sm:-left-6 z-30 shadow-xl rounded-full">
                   <DailyVisitors />
                 </div>
               </div>

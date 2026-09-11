@@ -25,11 +25,10 @@ const ScrollFloat: React.FC<ScrollFloatProps> = ({
   scrollContainerRef,
   containerClassName = '',
   textClassName = '',
-  animationDuration = 2,
-  ease = 'back.inOut(1.5)',
-  scrollStart = 'top bottom+=20%',
-  scrollEnd = 'bottom center',
-  stagger = 0.05,
+  animationDuration = 1.1,
+  ease = 'power3.out',
+  scrollStart = 'top 95%',
+  stagger = 0.035,
   tag = 'span',
 }) => {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -66,9 +65,9 @@ const ScrollFloat: React.FC<ScrollFloatProps> = ({
       {
         willChange: 'opacity, transform',
         opacity: 0,
-        yPercent: 120,
-        scaleY: 2.3,
-        scaleX: 0.7,
+        yPercent: 70,
+        scaleY: 1.4,
+        scaleX: 0.8,
         transformOrigin: '50% 0%',
       },
       {
@@ -83,8 +82,7 @@ const ScrollFloat: React.FC<ScrollFloatProps> = ({
           trigger: el,
           scroller,
           start: scrollStart,
-          end: scrollEnd,
-          scrub: 1.5,
+          once: true,
         },
       }
     );
@@ -95,7 +93,7 @@ const ScrollFloat: React.FC<ScrollFloatProps> = ({
       }
       tween.kill();
     };
-  }, [rawText, scrollContainerRef, animationDuration, ease, scrollStart, scrollEnd, stagger]);
+  }, [rawText, scrollContainerRef, animationDuration, ease, scrollStart, stagger]);
 
   const Tag = (tag || 'span') as any;
 
