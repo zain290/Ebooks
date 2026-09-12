@@ -46,7 +46,7 @@ const NewSeriesCard: React.FC = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
       <div className="absolute top-4 left-4 z-10">
-        <span className={`${book.badgeColor} text-white text-[11px] font-black uppercase px-3 py-1 rounded-full shadow-md tracking-wider`}>
+        <span className={`${book.badgeColor} text-white text-[11px] font-black capitalize px-3 py-1 rounded-full shadow-md tracking-wider`}>
           {book.badge}
         </span>
       </div>

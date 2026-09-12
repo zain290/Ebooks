@@ -64,8 +64,8 @@ const ProductDetails: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="w-full md:w-1/2 flex flex-col justify-center"
         >
-          <div className="inline-block px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-xs font-bold mb-4 uppercase tracking-wider w-max">
-            <ScrollFloat tag="span" text="LIMITED TIME OFFER" />
+          <div className="inline-block px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-xs font-bold mb-4 capitalize tracking-wider w-max">
+            <ScrollFloat tag="span" text="Limited Time Offer" />
           </div>
           <ScrollFloat
             tag="h1"

@@ -14,21 +14,25 @@ export interface ScrollFloatProps {
   animationDuration?: number;
   ease?: string;
   scrollStart?: string;
-  scrollEnd?: string;
   stagger?: number;
   tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
 }
 
+/**
+ * Modern High-Performance Cinematic Appearance Animation
+ * Elegant blur-to-clear, smooth upward glide, and subtle scaling
+ * without any distorting/warping letter artifacts.
+ */
 const ScrollFloat: React.FC<ScrollFloatProps> = ({
   children,
   text,
   scrollContainerRef,
   containerClassName = '',
   textClassName = '',
-  animationDuration = 1.1,
-  ease = 'power3.out',
-  scrollStart = 'top 95%',
-  stagger = 0.035,
+  animationDuration = 0.85,
+  ease = 'power4.out',
+  scrollStart = 'top 92%',
+  stagger = 0.025,
   tag = 'span',
 }) => {
   const containerRef = useRef<HTMLElement | null>(null);
@@ -40,66 +44,31 @@ const ScrollFloat: React.FC<ScrollFloatProps> = ({
     return '';
   }, [children, text]);
 
-  const splitText = useMemo(() => {
-    return rawText.split('').map((char, index) => (
-      <span className="scroll-float-char" key={index}>
-        {char === ' ' ? '\u00A0' : char}
+  const charElementsContent = useMemo(() => {
+    const words = rawText.split(' ');
+    return words.map((word, wIndex) => (
+      <span key={wIndex} className="scroll-float-word">
+        {word.split('').map((char, cIndex) => (
+          <span className="scroll-float-char" key={cIndex}>
+            {char}
+          </span>
+        ))}
+        {wIndex < words.length - 1 && (
+          <span className="scroll-float-char">&nbsp;</span>
+        )}
       </span>
     ));
   }, [rawText]);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el || !rawText) return;
-
-    const scroller =
-      scrollContainerRef && scrollContainerRef.current
-        ? scrollContainerRef.current
-        : window;
-
-    const charElements = el.querySelectorAll('.scroll-float-char');
-    if (!charElements.length) return;
-
-    const tween = gsap.fromTo(
-      charElements,
-      {
-        willChange: 'opacity, transform',
-        opacity: 0,
-        yPercent: 70,
-        scaleY: 1.4,
-        scaleX: 0.8,
-        transformOrigin: '50% 0%',
-      },
-      {
-        duration: animationDuration,
-        ease: ease,
-        opacity: 1,
-        yPercent: 0,
-        scaleY: 1,
-        scaleX: 1,
-        stagger: stagger,
-        scrollTrigger: {
-          trigger: el,
-          scroller,
-          start: scrollStart,
-          once: true,
-        },
-      }
-    );
-
-    return () => {
-      if (tween.scrollTrigger) {
-        tween.scrollTrigger.kill();
-      }
-      tween.kill();
-    };
+    // Animation removed as per user request
   }, [rawText, scrollContainerRef, animationDuration, ease, scrollStart, stagger]);
 
   const Tag = (tag || 'span') as any;
 
   return (
     <Tag ref={containerRef} className={`scroll-float ${containerClassName}`}>
-      <span className={`scroll-float-text ${textClassName}`}>{splitText}</span>
+      <span className={`scroll-float-text ${textClassName}`}>{charElementsContent}</span>
     </Tag>
   );
 };

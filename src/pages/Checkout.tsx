@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import ScrollFloat from '../components/ScrollFloat';
 
 const Checkout: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,7 +27,7 @@ const Checkout: React.FC = () => {
         
         {/* Left Side: Product Summary */}
         <div className="w-full md:w-1/3 bg-primary/5 p-8 border-b md:border-b-0 md:border-r border-text/10 flex flex-col">
-          <h3 className="text-lg font-medium text-text/60 mb-6">Order Summary</h3>
+          <ScrollFloat tag="h3" text="Order Summary" containerClassName="text-lg font-medium text-text/60 mb-6" />
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-24 bg-text/10 rounded shadow-sm overflow-hidden flex-shrink-0">
               {ebook.cover_image_url && <img src={ebook.cover_image_url} alt="" className="w-full h-full object-cover" />}
@@ -47,7 +48,7 @@ const Checkout: React.FC = () => {
         {/* Right Side: Form */}
         <div className="w-full md:w-2/3 p-8 md:p-12">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold">Checkout</h2>
+            <ScrollFloat tag="h2" text="Checkout" containerClassName="text-2xl font-bold" />
             <span className="text-sm text-text/40 font-medium">Step {step} of 3</span>
           </div>
 
@@ -82,7 +83,7 @@ const Checkout: React.FC = () => {
             <AnimateStep step={step} current={3}>
               <div className="text-center py-8">
                 <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">✓</div>
-                <h3 className="text-3xl font-bold mb-4">Payment Successful!</h3>
+                <ScrollFloat tag="h3" text="Payment Successful!" containerClassName="text-3xl font-bold mb-4" />
                 <p className="text-text/60 mb-8">Your e-book has been sent to your email address.</p>
                 <Link to="/products" className="inline-block px-8 py-3 bg-primary text-white rounded-full font-medium">Return to Library</Link>
               </div>

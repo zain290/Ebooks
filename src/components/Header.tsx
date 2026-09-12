@@ -11,19 +11,19 @@ const Header: React.FC<HeaderProps> = () => {
   const location = useLocation();
 
   const navLinks = [
+    { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
-    { name: 'Store', path: '/products' },
-    { name: 'Contact Us', path: '/contact' },
-    { name: 'Admin', path: '/admin' } // Keeping Admin for functionality
+    { name: 'Explore', path: '/products' },
+    { name: 'Contact Us', path: '/contact' }
   ];
 
   return (
-    <header className="w-full bg-[#F9F9F7] py-6 px-8 md:px-16 flex items-center justify-between border-b border-gray-200">
+    <header className="w-full bg-[#BDB5D5] py-6 px-8 md:px-16 flex items-center justify-between border-b border-black/5 sticky top-0 z-50">
       {/* Logo */}
-      <Link to="/" className="text-2xl font-black tracking-widest text-[#1A1A1A] uppercase inline-block">
+      <Link to="/" className="text-2xl font-bold tracking-widest text-[#2E1065] capitalize inline-block">
         <ScrollFloat
           tag="span"
-          text="BOOK SHOP"
+          text="Book Shop"
         />
       </Link>
 
@@ -33,8 +33,8 @@ const Header: React.FC<HeaderProps> = () => {
           <Link
             key={link.name}
             to={link.path}
-            className={`text-sm font-medium transition-colors ${
-              location.pathname === link.path ? 'text-[#1A1A1A] font-bold' : 'text-[#333333] hover:text-[#1A1A1A]'
+            className={`text-sm transition-colors ${
+              location.pathname === link.path ? 'text-[#2E1065] font-semibold' : 'text-[#333333] font-medium hover:text-[#2E1065]'
             }`}
           >
             <ScrollFloat
@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = () => {
       <div className="flex items-center">
         <Link
           to="/login"
-          className="px-6 py-2 rounded-full border-2 border-[#1A1A1A] text-[#1A1A1A] font-bold text-sm hover:bg-[#1A1A1A] hover:text-white transition-colors inline-block"
+          className="px-6 py-2 rounded-full border-2 border-[#2E1065] text-[#2E1065] font-bold text-sm hover:bg-[#2E1065] hover:text-white transition-colors inline-block"
         >
           <ScrollFloat
             tag="span"

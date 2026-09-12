@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ParticleText from './ParticleText';
 
+import ScrollFloat from './ScrollFloat';
+
 interface FooterProps {
   theme: 'light' | 'dark';
 }
@@ -33,7 +35,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const logoColor = theme === 'dark' ? '#ffffff' : '#111111';
+  const logoColor = theme === 'dark' ? '#ffffff' : '#2E1065';
 
   return (
     <footer className="footer">
@@ -42,7 +44,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
           <nav className="footer-links">
             {navLinks.map((link) => (
               <Link key={link.name} to={link.path} className="footer-nav-link" style={{ fontWeight: '800' }}>
-                {link.name}
+                <ScrollFloat tag="span" text={link.name} />
               </Link>
             ))}
           </nav>

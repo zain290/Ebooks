@@ -1,5 +1,6 @@
 .scroll-float {
   display: inline-block;
+  vertical-align: baseline;
 }
 
 .scroll-float-text {
@@ -10,7 +11,15 @@
   text-align: inherit;
 }
 
+.scroll-float-word {
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
 .scroll-float-char {
   display: inline-block;
-  will-change: opacity, transform;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }

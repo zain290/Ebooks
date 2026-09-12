@@ -13,11 +13,11 @@ const DailyVisitors: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-col text-left">
-        <span className="font-black text-[#1A1A1A] text-base sm:text-lg leading-tight">
+        <span className="font-black text-[#2E1065] text-base sm:text-lg leading-tight">
           <ScrollFloat text="3500K+" />
         </span>
-        <span className="text-[10px] sm:text-xs text-gray-500 font-medium leading-none tracking-wide uppercase mt-0.5 whitespace-nowrap">
-          <ScrollFloat text="OUR DAILY VISITORS" />
+        <span className="text-[10px] sm:text-xs text-gray-500 font-medium leading-none tracking-wide capitalize mt-0.5 whitespace-nowrap">
+          <ScrollFloat text="Our Daily Visitors" />
         </span>
       </div>
     </div>
