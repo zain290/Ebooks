@@ -9,12 +9,14 @@ import GradientText from '../components/GradientText';
 interface Ebook {
   id: number;
   title: string;
+  category?: string;
   cover_image_url: string;
 }
 
 const Home: React.FC = () => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
 
   useEffect(() => {
     fetch('/api/ebooks')
@@ -34,30 +36,74 @@ const Home: React.FC = () => {
     );
   }
 
-  const spiralItems = ebooks.map(book => ({
+  const categories = Array.from(new Set(ebooks.map(b => b.category).filter(Boolean))) as string[];
+  const currentCategory = categories.length > 0 ? categories[currentCategoryIndex] : '';
+
+  const handleNextCategory = () => {
+    if (categories.length > 0) {
+      setCurrentCategoryIndex((prev) => (prev + 1) % categories.length);
+    }
+  };
+
+  const handlePrevCategory = () => {
+    if (categories.length > 0) {
+      setCurrentCategoryIndex((prev) => (prev - 1 + categories.length) % categories.length);
+    }
+  };
+
+  const filteredEbooks = currentCategory ? ebooks.filter(b => b.category === currentCategory) : ebooks;
+
+  let spiralItems = filteredEbooks.map(book => ({
     src: book.cover_image_url,
     alt: book.title,
-    href: `/products/${book.id}`
+    href: `/products/${book.id}`,
+    id: book.id
   }));
 
+  // Ensure there are enough items to form a complete spiral
+  if (spiralItems.length > 0 && spiralItems.length < 15) {
+    const original = [...spiralItems];
+    while (spiralItems.length < 15) {
+      spiralItems = [...spiralItems, ...original.map(item => ({ ...item, id: item.id + Math.random() }))];
+    }
+  }
+
   return (
-    <div className="h-[calc(100vh-96px)] w-full bg-transparent flex items-center relative overflow-hidden">
-      <div className="w-full max-w-[1500px] mx-auto px-6 md:px-12 relative z-10 h-full">
+    <div className="h-[calc(100vh-96px)] w-full bg-transparent flex items-center relative overflow-hidden group">
+      
+      {/* Global Left/Right Navigation Buttons */}
+      <button 
+        onClick={handlePrevCategory}
+        className="absolute left-4 lg:left-6 top-[40%] -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-[#2E1065] flex items-center justify-center text-white hover:bg-[#2E1065]/90 transition-all shadow-2xl hover:scale-110"
+        aria-label="Previous Category"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+
+      <button 
+        onClick={handleNextCategory}
+        className="absolute right-4 lg:right-6 top-[40%] -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-[#2E1065] flex items-center justify-center text-white hover:bg-[#2E1065]/90 transition-all shadow-2xl hover:scale-110"
+        aria-label="Next Category"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      <div className="w-full max-w-[1500px] mx-auto px-16 lg:px-32 relative z-10 h-full">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 h-full relative">
           
           {/* Creative Text Area (40% width on Desktop) */}
-          <div className="w-full lg:w-[40%] flex flex-col gap-6 z-30 pt-4 lg:pt-0 text-center lg:text-left items-center lg:items-start -mt-10 lg:mt-0">
+          <div className="w-full lg:w-[40%] flex flex-col gap-4 lg:gap-5 z-30 pt-4 lg:pt-0 text-center lg:text-left items-center lg:items-start -mt-10 lg:mt-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
             >
-              <h1 className="text-[#2E1065] font-semibold text-5xl md:text-6xl lg:text-[72px] leading-[1.05] tracking-tight">
-                Get Lost In <br className="hidden lg:block" />
+              <h1 className="text-[#2E1065] font-semibold text-5xl lg:text-6xl leading-[1.05] tracking-tight">
+                Get Lost In <br />
                 <GradientText 
                   colors={['#2E1065', '#8B5CF6', '#D8BFD8', '#2E1065']} 
-                  animationSpeed={5} 
-                  className="italic font-light inline-block mt-1"
+                  animationSpeed={4}
+                  className="italic font-light inline-block mt-1 whitespace-nowrap"
                 >
                   Great Books
                 </GradientText>
@@ -69,7 +115,7 @@ const Home: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <p className="text-[#2E1065]/80 text-lg md:text-xl font-light leading-relaxed max-w-md">
+              <p className="text-[#2E1065]/80 text-base md:text-lg font-light leading-relaxed max-w-md">
                 Step into a universe of captivating stories, insightful non-fiction, and timeless classics. A curated library designed for the modern reader.
               </p>
             </motion.div>
@@ -77,8 +123,24 @@ const Home: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="pt-2"
+            >
+              <div className="font-bold text-lg md:text-xl tracking-wider uppercase">
+                <GradientText 
+                  colors={['#2E1065', '#8B5CF6', '#D8BFD8', '#2E1065']} 
+                  animationSpeed={4}
+                >
+                  {currentCategory || 'All Books'}
+                </GradientText>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="pt-4"
+              className="pt-0"
             >
               <motion.div
                 animate={{ y: [0, -6, 0] }}
@@ -103,6 +165,7 @@ const Home: React.FC = () => {
               className="w-full h-full absolute inset-0"
             >
               <InfiniteSpiral
+                key={currentCategory}
                 items={spiralItems}
                 cardWidth={90}        // Decreased card size
                 cardHeight={135}      // Decreased card size
