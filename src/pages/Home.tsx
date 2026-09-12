@@ -20,7 +20,7 @@ const CATEGORY_THEMES: Record<string, {bg: string, text: string, muted: string, 
   'Stories': { bg: '#FAD2A7', text: '#5C2808', muted: '#8F4616', navBorder: '#F2B87F', buttonHover: '#421A04', gradient: ['#5C2808', '#A45318', '#DE833D', '#5C2808'] },
   'Novels': { bg: '#BDB5D5', text: '#2E1065', muted: '#52219B', navBorder: '#A59AC2', buttonHover: '#1B083F', gradient: ['#2E1065', '#6D28D9', '#A78BFA', '#2E1065'] },
   'Psychology': { bg: '#FDF0B9', text: '#523F04', muted: '#856A15', navBorder: '#F2E08A', buttonHover: '#362901', gradient: ['#523F04', '#A18116', '#D9B53A', '#523F04'] },
-  'Discipline': { bg: '#E1F5A9', text: '#1E3F18', muted: '#38682F', navBorder: '#C6E281', buttonHover: '#122A0E', gradient: ['#1E3F18', '#4A803D', '#7CBC6C', '#1E3F18'] },
+  'Discipline': { bg: '#CBD5E1', text: '#0F172A', muted: '#334155', navBorder: '#94A3B8', buttonHover: '#020617', gradient: ['#0F172A', '#334155', '#64748B', '#0F172A'] },
   'Language': { bg: '#D6EEF8', text: '#0B3B52', muted: '#1E5D7D', navBorder: '#A8D7EE', buttonHover: '#062738', gradient: ['#0B3B52', '#227299', '#57A9D1', '#0B3B52'] },
   'default': { bg: '#BDB5D5', text: '#2E1065', muted: '#52219B', navBorder: '#A59AC2', buttonHover: '#1B083F', gradient: ['#2E1065', '#6D28D9', '#A78BFA', '#2E1065'] }
 };
