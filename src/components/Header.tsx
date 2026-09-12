@@ -18,9 +18,12 @@ const Header: React.FC<HeaderProps> = () => {
   ];
 
   return (
-    <header className="w-full bg-[#BDB5D5] py-6 px-8 md:px-16 flex items-center justify-between border-b border-black/5 sticky top-0 z-50">
+    <header 
+      className="w-full py-6 px-8 md:px-16 flex items-center justify-between border-b sticky top-0 z-50 transition-colors duration-700 ease-in-out"
+      style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-nav-border)' }}
+    >
       {/* Logo */}
-      <Link to="/" className="text-2xl font-bold tracking-widest text-[#2E1065] capitalize inline-block">
+      <Link to="/" className="text-2xl font-bold tracking-widest capitalize inline-block transition-colors duration-700 ease-in-out" style={{ color: 'var(--color-text)' }}>
         <ScrollFloat
           tag="span"
           text="Book Shop"
@@ -33,9 +36,11 @@ const Header: React.FC<HeaderProps> = () => {
           <Link
             key={link.name}
             to={link.path}
-            className={`text-sm transition-colors ${
-              location.pathname === link.path ? 'text-[#2E1065] font-semibold' : 'text-[#333333] font-medium hover:text-[#2E1065]'
-            }`}
+            className="text-sm font-medium transition-colors duration-700 ease-in-out hover:opacity-100"
+            style={{ 
+              color: location.pathname === link.path ? 'var(--color-text)' : 'var(--color-muted)',
+              fontWeight: location.pathname === link.path ? '600' : '500'
+            }}
           >
             <ScrollFloat
               tag="span"
@@ -49,7 +54,12 @@ const Header: React.FC<HeaderProps> = () => {
       <div className="flex items-center">
         <Link
           to="/login"
-          className="px-6 py-2 rounded-full border-2 border-[#2E1065] text-[#2E1065] font-bold text-sm hover:bg-[#2E1065] hover:text-white transition-colors inline-block"
+          className="px-6 py-2 rounded-full border-2 font-bold text-sm transition-all duration-700 ease-in-out inline-block hover:scale-105"
+          style={{ 
+            borderColor: 'var(--color-text)', 
+            color: 'var(--color-background)',
+            backgroundColor: 'var(--color-text)'
+          }}
         >
           <ScrollFloat
             tag="span"

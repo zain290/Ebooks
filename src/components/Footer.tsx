@@ -20,6 +20,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 640);
   const [fontSize, setFontSize] = useState(Math.min(380, window.innerWidth / 3) * 0.64);
+  const [logoColor, setLogoColor] = useState('#2E1065');
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,12 +31,23 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
       }
     };
     window.addEventListener('resize', handleResize, { passive: true });
-    // Run once on mount to align
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const logoColor = theme === 'dark' ? '#ffffff' : '#2E1065';
+  useEffect(() => {
+    const root = document.documentElement;
+    const updateColor = () => {
+      const color = getComputedStyle(root).getPropertyValue('--color-text').trim();
+      if (color) setLogoColor(color);
+    };
+    
+    updateColor();
+    const observer = new MutationObserver(updateColor);
+    observer.observe(root, { attributes: true, attributeFilter: ['style', 'class'] });
+    
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <footer className="footer">

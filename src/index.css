@@ -72,7 +72,7 @@ body {
   background-color: var(--color-background);
   background-attachment: fixed;
   color: var(--color-text);
-  transition: background-color 0.5s ease, color 0.5s ease;
+  transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out;
 }
 
 #root {
@@ -95,7 +95,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-background);
   color: var(--color-text);
   overflow: hidden;
-  transition: background-color 0.5s ease, color 0.5s ease;
+  transition: background-color 0.8s ease-in-out, color 0.8s ease-in-out;
 }
 
 .footer-split {
