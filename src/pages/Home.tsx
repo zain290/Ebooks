@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 // React Bits Components
@@ -25,10 +25,26 @@ const CATEGORY_THEMES: Record<string, {bg: string, text: string, muted: string, 
   'default': { bg: '#BDB5D5', text: '#2E1065', muted: '#52219B', navBorder: '#A59AC2', buttonHover: '#1B083F', gradient: ['#2E1065', '#6D28D9', '#A78BFA', '#2E1065'] }
 };
 
+const swipeVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? '100vw' : '-100vw',
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? '100vw' : '-100vw',
+    opacity: 0,
+  })
+};
+
 const Home: React.FC = () => {
   const [ebooks, setEbooks] = useState<Ebook[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
 
   useEffect(() => {
     fetch('/api/ebooks')
@@ -66,12 +82,14 @@ const Home: React.FC = () => {
 
   const handleNextCategory = () => {
     if (categories.length > 0) {
+      setDirection(1);
       setCurrentCategoryIndex((prev) => (prev + 1) % categories.length);
     }
   };
 
   const handlePrevCategory = () => {
     if (categories.length > 0) {
+      setDirection(-1);
       setCurrentCategoryIndex((prev) => (prev - 1 + categories.length) % categories.length);
     }
   };
@@ -116,7 +134,20 @@ const Home: React.FC = () => {
       </button>
 
       <div className="w-full max-w-[1500px] mx-auto px-16 lg:px-32 relative z-10 h-full">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 h-full relative">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div 
+            key={currentCategoryIndex}
+            custom={direction}
+            variants={swipeVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 }
+            }}
+            className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 h-full relative w-full"
+          >
           
           {/* Creative Text Area (40% width on Desktop) */}
           <div className="w-full lg:w-[40%] flex flex-col gap-4 lg:gap-5 z-30 pt-4 lg:pt-0 text-center lg:text-left items-center lg:items-start -mt-10 lg:mt-0 transition-colors duration-700 ease-in-out">
@@ -207,7 +238,8 @@ const Home: React.FC = () => {
             </motion.div>
           </div>
           
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
