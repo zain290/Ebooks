@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import './InfiniteSpiral.css';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -28,8 +30,10 @@ const InfiniteSpiral = ({
   pauseOnHover = true,
   imageFit = 'cover',
   grayscale = 0,
-  className = ''
+  className = '',
+  onItemClick
 }) => {
+  const navigate = useNavigate();
   const rootRef = useRef(null);
   const cardRefs = useRef([]);
   const progressRef = useRef(0);
@@ -107,6 +111,16 @@ const InfiniteSpiral = ({
       const followBlend = 1 - Math.exp(-delta * (draggingRef.current ? 22 : 11));
       progressRef.current += (targetProgressRef.current - progressRef.current) * followBlend;
 
+      // Performance optimization: skip DOM updates if not visible or not moving
+      if (
+        !visibleRef.current ||
+        (Math.abs(targetProgressRef.current - progressRef.current) < 0.001 &&
+          Math.abs(autoSpeedRef.current) < 0.001)
+      ) {
+        frameId = requestAnimationFrame(render);
+        return;
+      }
+
       const count = normalizedItems.length;
       const half = count / 2;
       const width = Math.max(bounds.width, 1);
@@ -115,6 +129,9 @@ const InfiniteSpiral = ({
       const responsiveRadius = Math.min(radius, Math.max(72, width * 0.36)) * fit;
       const fadeStart = clamp(1 - edgeFade, 0, 0.98);
       const turnSize = Math.max(cardsPerTurn, 1);
+
+      // Simple low-end device heuristic
+      const isLowEnd = typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
       cardRefs.current.forEach((card, index) => {
         if (!card) return;
@@ -132,10 +149,15 @@ const InfiniteSpiral = ({
         const depthScale = clamp(perspective / Math.max(perspective - z, 1), 0.72, 1.45);
         const visualScale = scale * depthScale;
         const depth = (z / Math.max(responsiveRadius, 1) + 1) / 2;
-        const blur = edgeBlur * smoothstep(0.35, 1, edge);
+        const blur = isLowEnd ? 0 : edgeBlur * smoothstep(0.35, 1, edge);
+        
         card.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${offset * verticalSpacing * fit}px, 0) rotateZ(${cardTilt}deg) scale(${visualScale})`;
         card.style.opacity = opacity.toFixed(3);
-        card.style.filter = blur > 0.01 ? `blur(${blur.toFixed(2)}px)` : 'none';
+        if (!isLowEnd) {
+            card.style.filter = blur > 0.01 ? `blur(${blur.toFixed(2)}px)` : 'none';
+        } else {
+            card.style.filter = 'none';
+        }
         card.style.zIndex = String(Math.round(depth * 100000) + index);
         card.style.pointerEvents = opacity > 0.25 ? 'auto' : 'none';
       });
@@ -229,22 +251,26 @@ const InfiniteSpiral = ({
     >
       <div className="infinite-spiral__stage" role="list" aria-label="Infinite spiral gallery">
         {normalizedItems.map((item, index) => {
-          const Card = item.href ? 'a' : 'div';
           return (
-            <Card
+            <div
               key={item.id ?? `${item.src}-${index}`}
               ref={node => {
                 cardRefs.current[index] = node;
               }}
               className="infinite-spiral__item"
               style={{ width: cardWidth, height: cardHeight, borderRadius: cardRadius }}
-              href={item.href}
-              target={item.target}
-              rel={item.target === '_blank' ? 'noreferrer' : undefined}
-              role="listitem"
+              onClick={() => {
+                if (onItemClick) {
+                  onItemClick(item);
+                } else if (item.href) {
+                  navigate(item.href, { state: { ebook: item.ebook } });
+                }
+              }}
+              role={item.href ? "button" : "listitem"}
               aria-label={item.label ?? item.alt}
             >
-              <img
+              <motion.img
+                layoutId={item.originalId ? `cover-${item.originalId}` : undefined}
                 className="infinite-spiral__image"
                 src={item.src}
                 alt={item.alt}
@@ -259,7 +285,7 @@ const InfiniteSpiral = ({
                   filter: `grayscale(${Math.min(1, Math.max(0, grayscale))})`
                 }}
               />
-            </Card>
+            </div>
           );
         })}
       </div>

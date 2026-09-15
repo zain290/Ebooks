@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ScrollFloat from '../components/ScrollFloat';
 
@@ -17,6 +17,7 @@ const CATEGORY_THEMES: Record<string, { primary: string, bg: string }> = {
 
 const Checkout: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [ebook, setEbook] = useState<any>(null);
 
@@ -108,14 +109,19 @@ const Checkout: React.FC = () => {
                 <p className="text-text/60 mb-8">Your e-book is ready for download and a receipt has been sent to your email.</p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  {ebook.book_file_url ? (
-                    <a href={ebook.book_file_url} download className="px-8 py-3 bg-primary text-white rounded-full font-bold shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1">
-                      Download Book
-                    </a>
-                  ) : null}
-                  <Link to="/products" className="inline-block px-8 py-3 bg-text/10 text-text rounded-full font-medium hover:bg-text/20 transition-all">
-                    Return to Library
-                  </Link>
+                  <a 
+                    href={ebook.book_file_url || '#'} 
+                    download 
+                    onClick={() => {
+                      // Navigate back to main page after a short delay to allow download to start
+                      setTimeout(() => {
+                        navigate('/');
+                      }, 1000);
+                    }}
+                    className="px-8 py-3 bg-primary text-white rounded-full font-bold shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1 text-center"
+                  >
+                    Download Book
+                  </a>
                 </div>
               </div>
             </AnimateStep>

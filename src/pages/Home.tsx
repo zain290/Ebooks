@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // React Bits Components
 // @ts-ignore
 import InfiniteSpiral from '../components/InfiniteSpiral';
 // @ts-ignore
 import GradientText from '../components/GradientText';
+// @ts-ignore
+import ScrollExpand from '../components/ScrollExpand';
 
 interface Ebook {
   id: number;
@@ -47,6 +49,8 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [expandingItem, setExpandingItem] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/ebooks')
@@ -99,10 +103,12 @@ const Home: React.FC = () => {
   const filteredEbooks = currentCategory ? ebooks.filter(b => b.category === currentCategory) : ebooks;
 
   let spiralItems = filteredEbooks.map(book => ({
+    id: book.id,
+    originalId: book.id,
     src: book.cover_image_url,
     alt: book.title,
     href: `/products/${book.id}`,
-    id: book.id
+    ebook: book
   }));
 
   // Ensure there are enough items to form a complete spiral
@@ -236,6 +242,7 @@ const Home: React.FC = () => {
                 verticalSpacing={70}  
                 cardTilt={-8}
                 edgeFade={0.15}       // Delay fade-out so books reach the edge
+                onItemClick={(item: any) => setExpandingItem(item)}
               />
             </motion.div>
           </div>
@@ -243,6 +250,27 @@ const Home: React.FC = () => {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Auto-play Transition Overlay */}
+      {expandingItem && (
+        <div className="absolute inset-0 z-50 bg-background flex items-center justify-center overflow-hidden">
+          <ScrollExpand
+            src={expandingItem.src}
+            alt={expandingItem.alt}
+            autoPlay={true}
+            onComplete={() => {
+              navigate(expandingItem.href, { state: { ebook: expandingItem.ebook } });
+            }}
+            startWidth={20}
+            startHeight={45}
+            startRadius={10}
+            endWidth={90}
+            endHeight={80}
+            endRadius={24}
+            className="w-full h-full"
+          />
+        </div>
+      )}
     </div>
   );
 };
