@@ -157,10 +157,23 @@ const FixedCTA: React.FC<FixedCTAProps> = ({
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setSending(false);
-    setSubmitted(true);
-    setFormData({ name: '', email: '', message: '' });
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        alert('Failed to send message.');
+      }
+    } catch (error) {
+      alert('An error occurred.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const sendChatMessage = useCallback(async (text: string) => {

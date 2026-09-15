@@ -3,6 +3,18 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ScrollFloat from '../components/ScrollFloat';
 
+const CATEGORY_THEMES: Record<string, { primary: string, bg: string }> = {
+  Finance: { primary: '#65a30d', bg: '#f7fee7' },
+  Education: { primary: '#0284c7', bg: '#f0f9ff' },
+  Health: { primary: '#db2777', bg: '#fdf2f8' },
+  Stories: { primary: '#ea580c', bg: '#fff7ed' },
+  Novels: { primary: '#9333ea', bg: '#faf5ff' },
+  Psychology: { primary: '#d97706', bg: '#fffbeb' },
+  Discipline: { primary: '#65a30d', bg: '#f7fee7' },
+  Language: { primary: '#0284c7', bg: '#f0f9ff' },
+  Uncategorized: { primary: '#4b5563', bg: '#f9fafb' }
+};
+
 const Checkout: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [step, setStep] = useState(1);
@@ -21,8 +33,17 @@ const Checkout: React.FC = () => {
 
   if (!ebook) return null;
 
+  const actualPrice = ebook.discount_percentage ? (ebook.price - (ebook.price * ebook.discount_percentage / 100)) : ebook.price;
+  const theme = CATEGORY_THEMES[ebook.category] || CATEGORY_THEMES.Uncategorized;
+
   return (
-    <div className="min-h-screen bg-text/5 flex items-center justify-center py-20 px-4">
+    <div 
+      className="min-h-screen bg-text/5 flex items-center justify-center py-20 px-4 transition-colors duration-700"
+      style={{
+        '--color-primary': theme.primary,
+        '--color-background': theme.bg,
+      } as React.CSSProperties}
+    >
       <div className="max-w-4xl w-full bg-background rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
         
         {/* Left Side: Product Summary */}
@@ -34,13 +55,13 @@ const Checkout: React.FC = () => {
             </div>
             <div>
               <h4 className="font-bold line-clamp-2 text-sm">{ebook.title}</h4>
-              <p className="text-primary font-medium mt-1">${ebook.price.toFixed(2)}</p>
+              <p className="text-primary font-medium mt-1">${actualPrice.toFixed(2)}</p>
             </div>
           </div>
           <div className="mt-auto pt-6 border-t border-text/10">
             <div className="flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>${ebook.price.toFixed(2)}</span>
+              <span>${actualPrice.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -75,7 +96,7 @@ const Checkout: React.FC = () => {
                 </div>
                 <div className="flex gap-4 mt-6">
                   <button type="button" onClick={() => setStep(1)} className="w-1/3 py-4 bg-transparent border border-text/20 text-text/70 rounded-lg font-bold">Back</button>
-                  <button type="submit" className="w-2/3 py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90">Pay ${ebook.price.toFixed(2)}</button>
+                  <button type="submit" className="w-2/3 py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90">Pay ${actualPrice.toFixed(2)}</button>
                 </div>
               </div>
             </AnimateStep>
@@ -84,8 +105,18 @@ const Checkout: React.FC = () => {
               <div className="text-center py-8">
                 <div className="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">✓</div>
                 <ScrollFloat tag="h3" text="Payment Successful!" containerClassName="text-3xl font-bold mb-4" />
-                <p className="text-text/60 mb-8">Your e-book has been sent to your email address.</p>
-                <Link to="/products" className="inline-block px-8 py-3 bg-primary text-white rounded-full font-medium">Return to Library</Link>
+                <p className="text-text/60 mb-8">Your e-book is ready for download and a receipt has been sent to your email.</p>
+                
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  {ebook.book_file_url ? (
+                    <a href={ebook.book_file_url} download className="px-8 py-3 bg-primary text-white rounded-full font-bold shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1">
+                      Download Book
+                    </a>
+                  ) : null}
+                  <Link to="/products" className="inline-block px-8 py-3 bg-text/10 text-text rounded-full font-medium hover:bg-text/20 transition-all">
+                    Return to Library
+                  </Link>
+                </div>
               </div>
             </AnimateStep>
           </form>

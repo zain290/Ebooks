@@ -6,6 +6,9 @@ import { getSettings } from '../controllers/settings.controller'
 import { getPage } from '../controllers/pages.controller'
 import { chat } from '../controllers/chat.controller'
 import { ebooksRoutes } from './ebooks.routes'
+import { adminRoutes } from './admin.routes'
+import { contactRoutes } from './contact.routes'
+import { uploadRoutes } from './upload.routes'
 
 const router = Router()
 
@@ -19,5 +22,8 @@ router.get('/pages/:slug', getPage)
 router.post('/chat', chat)
 
 router.use('/ebooks', ebooksRoutes)
+router.use('/admin', adminRoutes)
+router.use('/contact', contactRoutes)
+router.use('/upload', uploadRoutes)
 
 export { router as apiRoutes }

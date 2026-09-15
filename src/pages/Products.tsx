@@ -22,6 +22,8 @@ interface Ebook {
   cover_image_url: string;
   author: string;
   category: string;
+  discount_percentage?: number;
+  sale_name?: string;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -59,10 +61,25 @@ const BookRow = ({ title, books, className = "mb-10 mt-10" }: { title: string, b
               <div className={`absolute top-2 left-0 ${CATEGORY_COLORS[book.category] || CATEGORY_COLORS.Uncategorized} text-[10px] font-bold px-2 py-1 rounded-r-md z-10 shadow-sm capitalize tracking-wider`}>
                 {book.category}
               </div>
+              {book.discount_percentage ? (
+                <div className="absolute top-2 right-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 shadow-lg">
+                  {book.sale_name || 'SALE'} -{book.discount_percentage}%
+                </div>
+              ) : null}
               <img src={book.cover_image_url} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
             <h3 className="font-bold text-sm line-clamp-1 group-hover:text-primary transition-colors text-[#1A1A1A]">{book.title}</h3>
-            <p className="text-xs text-[#555555] line-clamp-1 mt-0.5">{book.author}</p>
+            <div className="flex justify-between items-center mt-1">
+              <p className="text-xs text-[#555555] line-clamp-1">{book.author}</p>
+              {book.discount_percentage ? (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-primary">${(book.price - (book.price * book.discount_percentage / 100)).toFixed(2)}</span>
+                  <span className="text-[10px] text-gray-400 line-through">${book.price.toFixed(2)}</span>
+                </div>
+              ) : (
+                <span className="text-xs font-bold text-[#1A1A1A]">${book.price.toFixed(2)}</span>
+              )}
+            </div>
           </Link>
         ))}
       </div>
@@ -90,6 +107,7 @@ const Products: React.FC = () => {
 
   const newReleases = ebooks.slice(6, 12);
   const forYou = [...ebooks].reverse().slice(0, 6);
+  const saleBooks = ebooks.filter(b => b.discount_percentage && b.discount_percentage > 0);
 
   // Popular book titles for the wave ribbon
   const popularBookTitles = ebooks.length > 0
@@ -124,7 +142,7 @@ const Products: React.FC = () => {
               <HeroDescription />
               
               <div className="w-full max-w-[340px] sm:max-w-[380px] h-[370px] sm:h-[410px] relative flex items-center justify-center">
-                <NewSeriesCard />
+                {ebooks.length > 0 && <NewSeriesCard books={ebooks.slice(0, 4)} />}
                 
                 {/* Overlapping Daily Visitors */}
                 <div className="absolute -bottom-4 -left-3 sm:-left-6 z-30 shadow-xl rounded-full">
@@ -152,9 +170,9 @@ const Products: React.FC = () => {
               fontSize={22}
               fontWeight={800}
               letterSpacing={2}
-              color="#ffffff"
+              color="var(--color-background)"
               ribbon
-              ribbonColor="#2E1065"
+              ribbonColor="var(--color-text)"
               ribbonWidth={48}
               viewWidth={1200}
               viewHeight={260}
@@ -164,7 +182,10 @@ const Products: React.FC = () => {
         </div>
 
         {/* Other Sections */}
-        <BookRow title="New Releases" books={newReleases} className="mb-10 mt-[2.33pt]" />
+        {saleBooks.length > 0 && (
+          <BookRow title="Special Offers & Sales" books={saleBooks} className="mb-10 mt-[2.33pt]" />
+        )}
+        <BookRow title="New Releases" books={newReleases} className={saleBooks.length > 0 ? "mb-10" : "mb-10 mt-[2.33pt]"} />
         <BookRow title="For You" books={forYou} />
       </motion.div>
       

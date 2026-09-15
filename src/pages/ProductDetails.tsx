@@ -10,7 +10,22 @@ interface Ebook {
   price: number;
   cover_image_url: string;
   author: string;
+  category: string;
+  discount_percentage?: number;
+  sale_name?: string;
 }
+
+const CATEGORY_THEMES: Record<string, { primary: string, bg: string }> = {
+  Finance: { primary: '#65a30d', bg: '#f7fee7' },
+  Education: { primary: '#0284c7', bg: '#f0f9ff' },
+  Health: { primary: '#db2777', bg: '#fdf2f8' },
+  Stories: { primary: '#ea580c', bg: '#fff7ed' },
+  Novels: { primary: '#9333ea', bg: '#faf5ff' },
+  Psychology: { primary: '#d97706', bg: '#fffbeb' },
+  Discipline: { primary: '#65a30d', bg: '#f7fee7' },
+  Language: { primary: '#0284c7', bg: '#f0f9ff' },
+  Uncategorized: { primary: '#4b5563', bg: '#f9fafb' }
+};
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,13 +49,22 @@ const ProductDetails: React.FC = () => {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-pulse w-12 h-12 bg-primary/20 rounded-full"></div></div>;
   if (!ebook) return null;
 
+  const theme = CATEGORY_THEMES[ebook.category] || CATEGORY_THEMES.Uncategorized;
+
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 max-w-6xl mx-auto">
-      <Link to="/products" className="inline-block mb-8 text-text/60 hover:text-primary transition-colors">
-        ← Back to Library
-      </Link>
-      
-      <div className="flex flex-col md:flex-row gap-12 lg:gap-20">
+    <div 
+      className="min-h-screen pt-24 pb-16 px-4 transition-colors duration-700"
+      style={{
+        '--color-primary': theme.primary,
+        '--color-background': theme.bg,
+      } as React.CSSProperties}
+    >
+      <div className="max-w-6xl mx-auto">
+        <Link to="/products" className="inline-block mb-8 text-text/60 hover:text-primary transition-colors">
+          ← Back to Library
+        </Link>
+        
+        <div className="flex flex-col md:flex-row gap-12 lg:gap-20">
         {/* Left: 3D Mockup */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
@@ -64,9 +88,11 @@ const ProductDetails: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="w-full md:w-1/2 flex flex-col justify-center"
         >
-          <div className="inline-block px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-xs font-bold mb-4 capitalize tracking-wider w-max">
-            <ScrollFloat tag="span" text="Limited Time Offer" />
-          </div>
+          {(ebook.discount_percentage && ebook.discount_percentage > 0) ? (
+            <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold mb-4 capitalize tracking-wider w-max">
+              <ScrollFloat tag="span" text={`${ebook.sale_name || 'Limited Time Offer'} -${ebook.discount_percentage}%`} />
+            </div>
+          ) : null}
           <ScrollFloat
             tag="h1"
             text={ebook.title}
@@ -78,9 +104,15 @@ const ProductDetails: React.FC = () => {
             containerClassName="text-lg text-text/50 mb-6"
           />
           
-          <div className="mb-8">
-            <span className="text-4xl font-bold text-primary">${ebook.price.toFixed(2)}</span>
-            <span className="ml-3 text-lg text-text/40 line-through">${(ebook.price * 2).toFixed(2)}</span>
+          <div className="mb-8 flex items-end gap-3">
+            {(ebook.discount_percentage && ebook.discount_percentage > 0) ? (
+              <>
+                <span className="text-4xl font-bold text-primary">${(ebook.price - (ebook.price * ebook.discount_percentage / 100)).toFixed(2)}</span>
+                <span className="text-lg text-text/40 line-through mb-1">${ebook.price.toFixed(2)}</span>
+              </>
+            ) : (
+              <span className="text-4xl font-bold text-primary">${ebook.price.toFixed(2)}</span>
+            )}
           </div>
 
           <p className="text-text/80 text-lg leading-relaxed mb-10">
@@ -109,6 +141,7 @@ const ProductDetails: React.FC = () => {
             <span>🔒 Secure Checkout</span> • <span>Instant Download</span>
           </p>
         </motion.div>
+      </div>
       </div>
     </div>
   );

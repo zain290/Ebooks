@@ -10,7 +10,9 @@ import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
 import About from './pages/About';
-import Admin from './pages/Admin';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import FixedCTA from './components/FixedCTA';
 
 const getInitialTheme = () => {
@@ -30,7 +32,12 @@ function MainRoutes() {
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/about" element={<About />} />
-        <Route path="/admin" element={<Admin />} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminLogin />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+        </Route>
       </Routes>
     </AnimatePresence>
   );

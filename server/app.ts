@@ -1,5 +1,7 @@
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
+import cookieParser from 'cookie-parser'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { routes } from './routes'
@@ -20,7 +22,9 @@ export class App {
 
   private configureMiddleware() {
     this.app.set('trust proxy', 1)
+    this.app.use(helmet({ crossOriginResourcePolicy: false })) // Allow cross-origin images
     this.app.use(cors())
+    this.app.use(cookieParser())
     this.app.use(express.json({ limit: '50mb' }))
     this.app.use(express.urlencoded({ limit: '50mb', extended: true }))
     const uploadsDir = path.resolve(__dirname, '..', 'data', 'uploads')

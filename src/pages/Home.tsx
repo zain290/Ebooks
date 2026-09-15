@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 // React Bits Components
+// @ts-ignore
 import InfiniteSpiral from '../components/InfiniteSpiral';
+// @ts-ignore
 import GradientText from '../components/GradientText';
 
 interface Ebook {

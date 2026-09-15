@@ -5,10 +5,10 @@ import ParticleText from './ParticleText';
 import ScrollFloat from './ScrollFloat';
 
 interface FooterProps {
-  theme: 'light' | 'dark';
+  theme?: 'light' | 'dark';
 }
 
-const Footer: React.FC<FooterProps> = ({ theme }) => {
+const Footer: React.FC<FooterProps> = () => {
   const [brandName] = useState('ALPHA');
   const [navLinks] = useState([
     { name: 'Showcase', path: '/' },
